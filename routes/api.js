@@ -41,16 +41,18 @@ module.exports = function (app) {
     );
     const { symbol, latestPrice } = await response.json();
     if(!symbol) {
-      res.json({stockData: {likes: like ? true:false}});
+      res.json({stockData: {likes: like ? 1:0}});
       return;
     }
-    //const oneStockData=await saveStock(stock,like,req.ip);
+
+    const oneStockData=await saveStock(stock,like,req.ip);
     console.log(oneStockData);
+    console.log(req.ip);
     res.json({
       stockData: {
         stock:symbol,
         price:latestPrice,
-        likes:12,
+        likes:oneStockData.likes.length,
       }
     });
   });
