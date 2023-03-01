@@ -1,8 +1,36 @@
 'use strict';
 
-async function saveStock() {
-  
+const StockModel = require("../models").Stock;
+const fetch = require("node-fetch");
+
+async function createStock(stock, like, ip) {
+  const newStock = new StockModel({
+    symbol: stock,
+    likes: like ? [ip] : [],
+  });
+  const savedNew = await newStock.save();
+  return savedNew;
 }
+
+async function findStock(stock) {
+  return await StockModel.findOne({ symbol: stock }).exec();
+}
+
+async function saveStock(stock, like, ip) {
+  let saved = {};
+  const foundStock = await findStock(stock);
+  if (!foundStock) {
+    const createsaved = await createStock(stock, like, ip);
+    return createsaved;
+  } else {
+    if (like && foundStock.likes.indexOf(ip) === -1) {
+      foundStock.likes.push(ip);
+    }
+    saved = await foundStock.save();
+    return saved;
+  }
+}
+
 
 module.exports = function (app) {
 
@@ -16,6 +44,8 @@ module.exports = function (app) {
       res.json({stockData: {likes: like ? true:false}});
       return;
     }
+    //const oneStockData=await saveStock(stock,like,req.ip);
+    console.log(oneStockData);
     res.json({
       stockData: {
         stock:symbol,
