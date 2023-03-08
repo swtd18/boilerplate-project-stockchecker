@@ -7,7 +7,6 @@ chai.use(chaiHttp);
 
 suite('Functional Tests', function() {
     suite("5 functional get request tests", function () {
-        console.log("test");
         test("Viewing one stock: GET request to /api/stock-prices/", function (done) {
           chai
             .request(server)
@@ -83,3 +82,7 @@ suite('Functional Tests', function() {
         });
       });
 });
+after(function() {
+  chai.request(server)
+    .get('/api')
+  });
